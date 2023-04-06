@@ -1,23 +1,34 @@
 ﻿using appsettingsJson_AspNetCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.Extensions.Options;
 
 namespace appsettingsJson_AspNetCore.Controllers
 {
     public class HomeController : Controller
     {
-
+        MailInfo _mailInfo;
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+        public HomeController(IOptions<MailInfo> mailInfo, ILogger<HomeController> logger, IConfiguration configuration)
         {
+            _mailInfo = mailInfo.Value;
             //_configuration = configuration;
             _logger = logger;
             _configuration = configuration;
         }
 
         public IActionResult Index()
+        {
+            //MailInfo mailInfo = _configuration.GetSection("MailInfo").Get<MailInfo>();
+
+            var a = _mailInfo.EmailInfo;
+
+            return View();
+        }
+
+        public IActionResult Privacy()
         {
             var value1 = _configuration["OrnekMetin"];
             var value2 = _configuration["Person"];
@@ -29,11 +40,6 @@ namespace appsettingsJson_AspNetCore.Controllers
 
             var v7 = _configuration.GetSection("Person").Get(typeof(Person));
 
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
