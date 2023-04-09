@@ -1,4 +1,5 @@
-﻿using appsettingsJson_AspNetCore.Models;
+﻿using System.Data.SqlClient;
+using appsettingsJson_AspNetCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.Extensions.Options;
@@ -9,7 +10,7 @@ namespace appsettingsJson_AspNetCore.Controllers
     {
         MailInfo _mailInfo;
         private readonly ILogger<HomeController> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration; //json cagirma ucun 
 
         public HomeController(IOptions<MailInfo> mailInfo, ILogger<HomeController> logger, IConfiguration configuration)
         {
@@ -27,6 +28,25 @@ namespace appsettingsJson_AspNetCore.Controllers
 
             return View();
         }
+
+        public IActionResult SecretJson()
+        {
+            var port = _configuration["MailInfo:Port"];
+            var hoost = _configuration["MailInfo:Host"];
+            ViewBag.port = port;
+            ViewBag.host = hoost;
+            //var a = _mailInfo.EmailInfo;
+
+            //Sql e Ozel connection string
+
+            var connectionString = _configuration.GetConnectionString("SQL");
+            SqlConnectionStringBuilder builder   = new SqlConnectionStringBuilder(connectionString);
+            builder.UserID = _configuration["SQL:KullaniciAdi"];
+            builder.Password = _configuration["SQL:Sifre"];
+            var x = builder.ConnectionString;
+            return View();
+        }
+
 
         public IActionResult Privacy()
         {
